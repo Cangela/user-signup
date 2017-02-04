@@ -130,7 +130,7 @@ class Welcome(webapp2.RequestHandler):
     def get(self):
             username = self.request.get("username")
             if valid_username(username):
-                self.response.out.write("Welcome, " + username)
+                self.response.out.write("<h1>Welcome, " + username + "!</h1>")
 
 
 
