@@ -43,9 +43,9 @@ form = """
                 </td>
                 </tr>
                 <tr>
-                <td><label for="email">Email (otional)</label></td>
+                <td><label for="email">Email (optional)</label></td>
                 <td>
-                <input name = "email">
+                <input name = "email" type="text" value="%(email)s">
                 <label style="color:red">%(error_email)s</label>
 
 
@@ -85,6 +85,7 @@ class Signup(webapp2.RequestHandler):
         self.Write_Form()
 
     def post(self):
+
         have_error = False
 
         username = self.request.get('username')
@@ -107,9 +108,9 @@ class Signup(webapp2.RequestHandler):
             error_password = "That's not a valid password!"
             have_error = True
 
-        elif password != verify:
+        if password != verify:
 
-            error_password = "Your passwords didn't match!"
+            error_verify = "Your passwords didn't match!"
             have_error = True
 
         if not valid_email(email):
@@ -122,16 +123,15 @@ class Signup(webapp2.RequestHandler):
             self.Write_Form(username, error_username, error_password, error_verify, email, error_email)
 
         else:
-            self.redirect('/Welcome?' + username)
+            self.redirect('/Welcome?username='+ username)
 
 class Welcome(webapp2.RequestHandler):
     """If no errors, goes to Welcome Page"""
     def get(self):
-        username = self.request.get('username')
-        if valid_username(username):
-            self.response.write("Welcome, " + username)
-        else:
-            self.redirect('/Signup')
+            username = self.request.get("username")
+            if valid_username(username):
+                self.response.out.write("Welcome, " + username)
+
 
 
 app = webapp2.WSGIApplication([
