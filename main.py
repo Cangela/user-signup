@@ -1,5 +1,3 @@
-
-
 import webapp2
 import cgi
 import re
@@ -9,8 +7,7 @@ form = """
     <html>
         <head>
         <style>
-            .error {
-                color: red;
+            .error {color: red;
             }
         </style>
         </head>
@@ -19,49 +16,50 @@ form = """
             <form  method="post">
             <table>
                 <tr>
-                <td><label for="username">Username</label></td>
+                    <td><label for="username">Username</label></td>
                 <td>
-                <input  type="text" name = "username" value = "%(username)s" required>
-                <label style="color:red">%(error_username)s</label>
-                <span class="error"</span>
+                    <input  type="text" name = "username" value = "%(username)s">
+                    <label class="error">%(error_username)s</label>
                 </td>
                 </tr>
-                <tr>
-                <td><label for="password">Password</label></td>
-                <td>
-                <input type="password" name = "password" value="" required>
-                <label style="color:red">%(error_password)s</label>
 
+                <tr>
+                    <td><label for="password">Password</label></td>
+                <td>
+                    <input type="password" name = "password" value="">
+                    <label class="error">%(error_password)s</label>
                 </td>
                 </tr>
+
                 <tr>
                     <td><label for="verify password">Verify Password</label></td>
                 <td>
-                <input type="password" name = "verify" value="" required>
-                <label style="color:red">%(error_verify)s</label>
+                    <input type="password" name = "verify" value="">
+                    <label class="error">%(error_verify)s</label>
 
                 </td>
                 </tr>
                 <tr>
-                <td><label for="email">Email (optional)</label></td>
+                    <td><label for="email">Email (optional)</label></td>
                 <td>
-                <input name = "email" type="text" value="%(email)s">
-                <label style="color:red">%(error_email)s</label>
-
-
+                    <input name = "email" type="text" value="%(email)s">
+                    <label style="color:red">%(error_email)s</label>
+                </td>
                 </tr>
                 </table>
-                <input type="submit">
-
+                    <input type="submit">
         </form>
     </body>
     </html>
 """
 
+def escape_html(s):
+    return cgi.escape(s, quote=True)
+
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
-        return USER_RE.match(username)
+    return USER_RE.match(username)
 
 PASS_RE = re.compile(r"^.{3,20}$")
 def valid_password(password):
@@ -73,13 +71,13 @@ def valid_email(email):
 
 class Signup(webapp2.RequestHandler):
     def Write_Form(self, username ="", error_username="", error_password = "",  error_verify = "", email = "", error_email = ""):
-        self.response.out.write(form % {'username': username,
+        self.response.out.write(form % {'username': escape_html(username),
                                         'error_username': error_username,
                                         'error_password': error_password,
                                         'error_verify': error_verify,
-                                        'email': email,
-                                        'error_email': error_email
-                                    } )
+                                        'email': escape_html(email),
+                                        'error_email': error_email})
+
     def get(self):
 
         self.Write_Form()
@@ -128,9 +126,9 @@ class Signup(webapp2.RequestHandler):
 class Welcome(webapp2.RequestHandler):
     """If no errors, goes to Welcome Page"""
     def get(self):
-            username = self.request.get("username")
-            if valid_username(username):
-                self.response.out.write("<h1>Welcome, " + username + "!</h1>")
+        username = self.request.get("username")
+        if valid_username(username):
+            self.response.out.write("<h1>Welcome, " + username + "!</h1>")
 
 
 
